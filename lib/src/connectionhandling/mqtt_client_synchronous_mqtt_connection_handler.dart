@@ -54,10 +54,7 @@ class SynchronousMqttConnectionHandler extends MqttConnectionHandler {
     connection.onDisconnected = onDisconnected;
 
     await connection.connect(hostname, port);
-    if(_subscription != null && !_subscription.isPaused) {
-      await _subscription.cancel();
-    }
-    _subscription = _clientEventBus.on<MessageAvailable>().listen(messageAvailable);
+    _clientEventBus.on<MessageAvailable>().listen(messageAvailable);
     // Transmit the required connection message to the broker.
     MqttLogger.log('SynchronousMqttConnectionHandler::internalConnect sending connect message');
 

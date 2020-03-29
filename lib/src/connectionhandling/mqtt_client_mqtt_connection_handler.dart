@@ -78,6 +78,7 @@ abstract class MqttConnectionHandler implements IMqttConnectionHandler {
   @override
   void sendMessage(MqttMessage message) {
     MqttLogger.log('MqttConnectionHandler::sendMessage - $message');
+    MqttLogger.log('MqttConnectionHandler::sendMessage port - ${connection?.client?.port}');
     if ((connectionStatus.state == MqttConnectionState.connected) ||
         (connectionStatus.state == MqttConnectionState.connecting)) {
       final typed.Uint8Buffer buff = typed.Uint8Buffer();
