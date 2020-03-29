@@ -24,7 +24,7 @@ class MqttNormalConnection extends MqttConnection {
   Future<MqttClientConnectionStatus> connect(String server, int port) async {
     try {
      final ConnectionTask<Socket> connectionTask = await Socket.startConnect(server, port);
-     client = connectionTask.socket;
+     client = await connectionTask.socket;
      readWrapper = ReadWrapper();
      messageStream = MqttByteBuffer(typed.Uint8Buffer());
      _startListening();

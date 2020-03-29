@@ -18,6 +18,8 @@ class SynchronousMqttConnectionHandler extends MqttConnectionHandler {
   /// The event bus
   events.EventBus _clientEventBus;
 
+  StreamSubscription<MessageAvailable> _subscription;
+
   /// Synchronously connect to the specific Mqtt Connection.
   @override
   Future<MqttClientConnectionStatus> internalConnect(
@@ -52,11 +54,12 @@ class SynchronousMqttConnectionHandler extends MqttConnectionHandler {
     connection.onDisconnected = onDisconnected;
 
     await connection.connect(hostname, port);
-    _clientEventBus.on<MessageAvailable>().listen(messageAvailable);
+    if(_subscription != null && !_subscription.isPaused) {
+      await _subscription.cancel();
+    }
+    _subscription = _clientEventBus.on<MessageAvailable>().listen(messageAvailable);
     // Transmit the required connection message to the broker.
     MqttLogger.log('SynchronousMqttConnectionHandler::internalConnect sending connect message');
-
-    sendMessage(connectMessage);
 
     // 带有超时逻辑 20s
     final Completer<MqttClientConnectionStatus> completer = Completer<MqttClientConnectionStatus>();
@@ -68,6 +71,7 @@ class SynchronousMqttConnectionHandler extends MqttConnectionHandler {
       connectTimer.cancel();
       completer.complete();
     }));
+    sendMessage(connectMessage);
     await completer.future;
     if(connectTimer.isActive) {
       connectTimer.cancel();
