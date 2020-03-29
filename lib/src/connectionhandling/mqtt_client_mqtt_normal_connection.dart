@@ -21,27 +21,27 @@ class MqttNormalConnection extends MqttConnection {
 
   /// Connect - overridden
   @override
-  Future<MqttClientConnectionStatus> connect(String server, int port) {
-    final Completer<MqttClientConnectionStatus> completer =
-        Completer<MqttClientConnectionStatus>();
+  Future<MqttClientConnectionStatus> connect(String server, int port) async {
     try {
-      // Connect and save the socket.
-      Socket.connect(server, port).then((dynamic socket) {
-        client = socket;
-        readWrapper = ReadWrapper();
-        messageStream = MqttByteBuffer(typed.Uint8Buffer());
-        _startListening();
-        completer.complete();
-      }).catchError((dynamic e) {
-        _onError(e);
-        completer.completeError(e);
-      });
+     final ConnectionTask<Socket> connectionTask = await Socket.startConnect(server, port);
+     client = connectionTask.socket;
+     readWrapper = ReadWrapper();
+     messageStream = MqttByteBuffer(typed.Uint8Buffer());
+     _startListening();
+     return null;
     } on Exception catch (e) {
-      completer.completeError(e);
+      _onError(e);
       final String message =
           'MqttNormalConnection::The connection to the message broker {$server}:{$port} could not be made.';
       throw NoConnectionException(message);
     }
-    return completer.future;
+  }
+
+  @override
+  void _disconnect() {
+    if (client != null) {
+      client.destroy();
+      client = null;
+    }
   }
 }
