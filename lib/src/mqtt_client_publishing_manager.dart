@@ -110,7 +110,10 @@ class PublishingManager implements IPublishingManager {
     // If we're expecting an ack for the message, remove it from the list of pubs awaiting ack.
     if (publishedMessages.keys
         .contains(ackMsg.variableHeader.messageIdentifier)) {
-      publishedMessages.remove(ackMsg.variableHeader.messageIdentifier);
+      var publishMessage = publishedMessages.remove(ackMsg.variableHeader.messageIdentifier);
+      if(publishMessage != null && publishMessage.header.qos == MqttQos.atLeastOnce) {
+        _notifyPublish(publishMessage);
+      }
     }
     return true;
   }
