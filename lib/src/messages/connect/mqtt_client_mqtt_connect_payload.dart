@@ -24,12 +24,12 @@ class MqttConnectPayload extends MqttPayload {
   String get clientIdentifier => _clientIdentifier;
 
   set clientIdentifier(String id) {
-    if (id.length > Constants.maxClientIdentifierLength) {
+    if (id.length > MqttClientConstants.maxClientIdentifierLength) {
       throw ClientIdentifierException(id);
     }
-    if (id.length > Constants.maxClientIdentifierLengthSpec) {
-      MqttLogger.log(
-          'MqttConnectPayload::Client id exceeds spec value of ${Constants.maxClientIdentifierLengthSpec}');
+    if (id.length > MqttClientConstants.maxClientIdentifierLengthSpec) {
+      MqttLogger.log('MqttConnectPayload::Client id exceeds spec value of '
+          '${MqttClientConstants.maxClientIdentifierLengthSpec}');
     }
     _clientIdentifier = id;
   }
@@ -89,8 +89,8 @@ class MqttConnectPayload extends MqttPayload {
 
   @override
   int getWriteLength() {
-    int length = 0;
-    final MqttEncoding enc = MqttEncoding();
+    var length = 0;
+    final enc = MqttEncoding();
     length += enc.getByteCount(clientIdentifier);
     if (variableHeader.connectFlags.willFlag) {
       length += enc.getByteCount(willTopic);
@@ -104,4 +104,8 @@ class MqttConnectPayload extends MqttPayload {
     }
     return length;
   }
+
+  @override
+  String toString() =>
+      'MqttConnectPayload - client identifier is : $clientIdentifier';
 }

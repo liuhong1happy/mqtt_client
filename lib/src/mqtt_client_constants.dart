@@ -8,13 +8,14 @@
 part of mqtt_client;
 
 /// Library wide constants
-class Constants {
+class MqttClientConstants {
   /// The Maximum allowed message size as defined by the MQTT v3 Spec (256MB).
   static const int maxMessageSize = 268435455;
 
   /// The Maximum allowed client identifier length as specified by the 3.1
-  /// specification is 23 characters, however we allow more than this, a warning is
-  /// given in the log if 23 is exceeded.
+  /// specification is 23 characters, however we allow more than
+  /// this, a warning is given in the log if 23 is exceeded.
+  /// NOte: this is only a warning, it changes no client behaviour.
   static const int maxClientIdentifierLength = 1024;
 
   /// Specification length
@@ -41,4 +42,15 @@ class Constants {
 
   /// V4 name
   static const String mqttV311ProtocolName = 'MQTT';
+
+  /// The default websocket subprotocol list
+  static const List<String> protocolsMultipleDefault = <String>[
+    'mqtt',
+    'mqttv3.1',
+    'mqttv3.11'
+  ];
+
+  /// The default websocket subprotocol list for brokers who expect
+  /// this field to be a single entry
+  static const List<String> protocolsSingleDefault = <String>['mqtt'];
 }

@@ -21,7 +21,7 @@ class MqttDisconnectMessage extends MqttMessage {
 
   @override
   String toString() {
-    final StringBuffer sb = StringBuffer();
+    final sb = StringBuffer();
     sb.write(super.toString());
     return sb.toString();
   }

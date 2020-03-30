@@ -15,7 +15,7 @@ abstract class Topic {
   Topic(this.rawTopic, List<dynamic> validations) {
     topicFragments = rawTopic.split(topicSeparator[0]);
     // run all validations
-    for (dynamic validation in validations) {
+    for (final dynamic validation in validations) {
       validation(this);
     }
   }
@@ -46,11 +46,13 @@ abstract class Topic {
   static void validateMaxLength(Topic topicInstance) {
     if (topicInstance.rawTopic.length > maxTopicLength) {
       throw Exception('mqtt_client::Topic: The length of the supplied rawTopic '
-          '(${topicInstance.rawTopic.length}) is longer than the maximum allowable ($maxTopicLength)');
+          '(${topicInstance.rawTopic.length}) is longer than the '
+          'maximum allowable ($maxTopicLength)');
     }
   }
 
-  /// Returns true if there are any wildcards in the specified rawTopic, otherwise false.
+  /// Returns true if there are any wildcards in the specified
+  /// rawTopic, otherwise false.
   bool get hasWildcards =>
       rawTopic.contains(multiWildcard) || rawTopic.contains(wildcard);
 

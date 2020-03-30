@@ -37,8 +37,8 @@ class MqttConnectVariableHeader extends MqttVariableHeader {
   /// Gets the length of the write data when WriteTo will be called.
   @override
   int getWriteLength() {
-    int headerLength = 0;
-    final MqttEncoding enc = MqttEncoding();
+    var headerLength = 0;
+    final enc = MqttEncoding();
     headerLength += enc.getByteCount(protocolName);
     headerLength += 1; // protocolVersion
     headerLength += MqttConnectFlags.getWriteLength();
@@ -47,7 +47,8 @@ class MqttConnectVariableHeader extends MqttVariableHeader {
   }
 
   @override
-  String toString() =>
-      'Connect Variable Header: ProtocolName=$protocolName, ProtocolVersion=$protocolVersion, '
-      'ConnectFlags=${connectFlags.toString()}, KeepAlive=$keepAlive';
+  String toString() => 'Connect Variable Header: ProtocolName=$protocolName, '
+      'ProtocolVersion=$protocolVersion, '
+      'ConnectFlags=${connectFlags.toString()}, '
+      'KeepAlive=$keepAlive';
 }

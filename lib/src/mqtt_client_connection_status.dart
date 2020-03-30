@@ -17,8 +17,8 @@ class MqttClientConnectionStatus {
 
   @override
   String toString() {
-    final String s = state.toString().split('.')[1];
-    final String r = returnCode.toString().split('.')[1];
+    final s = state.toString().split('.')[1];
+    final r = returnCode.toString().split('.')[1];
     return 'Connection status is $s with return code $r';
   }
 }

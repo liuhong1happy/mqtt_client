@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
+part of mqtt_server_client;
 
 /// The MQTT secure connection class
 class MqttSecureConnection extends MqttConnection {
@@ -30,8 +30,7 @@ class MqttSecureConnection extends MqttConnection {
   /// Connect
   @override
   Future<MqttClientConnectionStatus> connect(String server, int port) {
-    final Completer<MqttClientConnectionStatus> completer =
-        Completer<MqttClientConnectionStatus>();
+    final completer = Completer<MqttClientConnectionStatus>();
     MqttLogger.log('MqttSecureConnection::connect');
     try {
       SecureSocket.connect(server, port,
@@ -49,18 +48,20 @@ class MqttSecureConnection extends MqttConnection {
         completer.completeError(e);
       });
     } on SocketException catch (e) {
-      final String message =
-          'MqttSecureConnection::The connection to the message broker {$server}:{$port} could not be made. Error is ${e.toString()}';
+      final message =
+          'MqttSecureConnection::The connection to the message broker '
+          '{$server}:{$port} could not be made. Error is ${e.toString()}';
       completer.completeError(e);
       throw NoConnectionException(message);
     } on HandshakeException catch (e) {
-      final String message =
-          'MqttSecureConnection::Handshake exception to the message broker {$server}:{$port}. Error is ${e.toString()}';
+      final message =
+          'MqttSecureConnection::Handshake exception to the message broker '
+          '{$server}:{$port}. Error is ${e.toString()}';
       completer.completeError(e);
       throw NoConnectionException(message);
     } on TlsException catch (e) {
-      final String message =
-          'MqttSecureConnection::TLS exception raised on secure connection. Error is ${e.toString()}';
+      final message = 'MqttSecureConnection::TLS exception raised on secure '
+          'connection. Error is ${e.toString()}';
       throw NoConnectionException(message);
     }
     return completer.future;

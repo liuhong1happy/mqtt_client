@@ -23,7 +23,8 @@ class MqttUnsubscribeMessage extends MqttMessage {
     readFrom(messageStream);
   }
 
-  /// Gets or sets the variable header contents. Contains extended metadata about the message
+  /// Gets or sets the variable header contents. Contains extended
+  /// metadata about the message.
   MqttUnsubscribeVariableHeader variableHeader;
 
   /// Gets or sets the payload of the Mqtt Message.
@@ -32,9 +33,9 @@ class MqttUnsubscribeMessage extends MqttMessage {
   /// Writes the message to the supplied stream.
   @override
   void writeTo(MqttByteBuffer messageStream) {
-    // If the protocol is V3.1.1 the following header fields must be set as below
-    // as in this protocol they are reserved.
-    if (Protocol.version == Constants.mqttV311ProtocolVersion) {
+    // If the protocol is V3.1.1 the following header fields
+    // must be set as below as in this protocol they are reserved.
+    if (Protocol.version == MqttClientConstants.mqttV311ProtocolVersion) {
       header.duplicate = false;
       header.qos = MqttQos.atLeastOnce;
       header.retain = false;
@@ -66,14 +67,15 @@ class MqttUnsubscribeMessage extends MqttMessage {
     return this;
   }
 
-  /// Sets the message up to request acknowledgement from the broker for each topic subscription.
+  /// Sets the message up to request acknowledgement from the
+  /// broker for each topic subscription.
   MqttUnsubscribeMessage expectAcknowledgement() {
     header.withQos(MqttQos.atLeastOnce);
     return this;
   }
 
-  /// Sets the duplicate flag for the message to indicate its a duplicate of a previous message type
-  /// with the same message identifier.
+  /// Sets the duplicate flag for the message to indicate its a
+  /// duplicate of a previous message type with the same message identifier.
   MqttUnsubscribeMessage isDuplicate() {
     header.isDuplicate();
     return this;
@@ -81,7 +83,7 @@ class MqttUnsubscribeMessage extends MqttMessage {
 
   @override
   String toString() {
-    final StringBuffer sb = StringBuffer();
+    final sb = StringBuffer();
     sb.write(super.toString());
     sb.writeln(variableHeader.toString());
     sb.writeln(payload.toString());

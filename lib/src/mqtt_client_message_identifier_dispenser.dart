@@ -14,7 +14,7 @@ class MessageIdentifierDispenser {
 
   MessageIdentifierDispenser._internal();
 
-  static MessageIdentifierDispenser _singleton =
+  static final MessageIdentifierDispenser _singleton =
       MessageIdentifierDispenser._internal();
 
   /// Maximum message identifier

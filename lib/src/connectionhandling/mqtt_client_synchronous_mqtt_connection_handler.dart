@@ -5,18 +5,19 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
+part of mqtt_server_client;
 
-/// Connection handler that performs connections and disconnections to the hostname in a synchronous manner.
+/// Connection handler that performs connections and disconnections
+/// to the hostname in a synchronous manner.
 class SynchronousMqttConnectionHandler extends MqttConnectionHandler {
-  /// Initializes a new instance of the MqttConnectionHandler class.
+  /// Initializes a new instance of the SynchronousMqttConnectionHandler class.
   SynchronousMqttConnectionHandler(this._clientEventBus);
 
   /// 超时持续时长
   static Duration timeoutDuration = Duration(seconds: 5);
 
   /// The event bus
-  events.EventBus _clientEventBus;
+  final events.EventBus _clientEventBus;
 
   StreamSubscription<MessageAvailable> _subscription;
 
@@ -59,8 +60,8 @@ class SynchronousMqttConnectionHandler extends MqttConnectionHandler {
     MqttLogger.log('SynchronousMqttConnectionHandler::internalConnect sending connect message');
 
     // 带有超时逻辑 20s
-    final Completer<MqttClientConnectionStatus> completer = Completer<MqttClientConnectionStatus>();
-    final Timer connectTimer = Timer(timeoutDuration, (){
+    final completer = Completer<MqttClientConnectionStatus>();
+    final connectTimer = Timer(timeoutDuration, (){
       _performConnectionDisconnect();
       completer.complete();
     });
@@ -87,10 +88,10 @@ class SynchronousMqttConnectionHandler extends MqttConnectionHandler {
   MqttConnectionState disconnect() {
     MqttLogger.log('SynchronousMqttConnectionHandler::disconnect');
     // Send a disconnect message to the broker
-    connectionStatus.state = MqttConnectionState.disconnecting;
     sendMessage(MqttDisconnectMessage());
+    // Disconnect
     _performConnectionDisconnect();
-    return connectionStatus.state = MqttConnectionState.disconnected;
+    return connectionStatus.state;
   }
 
   /// Disconnects the underlying connection object.
@@ -114,14 +115,14 @@ class SynchronousMqttConnectionHandler extends MqttConnectionHandler {
               MqttConnectReturnCode.notAuthorized ||
           ackMsg.variableHeader.returnCode ==
               MqttConnectReturnCode.badUsernameOrPassword) {
-        MqttLogger.log(
-            'SynchronousMqttConnectionHandler::_connectAckProcessor connection rejected');
+        MqttLogger.log('SynchronousMqttConnectionHandler::_connectAckProcessor '
+            'connection rejected');
         connectionStatus.returnCode = ackMsg.variableHeader.returnCode;
         _performConnectionDisconnect();
       } else {
         // Initialize the keepalive to start the ping based keepalive process.
-        MqttLogger.log(
-            'SynchronousMqttConnectionHandler::_connectAckProcessor - state = connected');
+        MqttLogger.log('SynchronousMqttConnectionHandler::_connectAckProcessor '
+            '- state = connected');
         connectionStatus.state = MqttConnectionState.connected;
         connectionStatus.returnCode = MqttConnectReturnCode.connectionAccepted;
         // Call the connected callback if we have one
@@ -135,4 +136,13 @@ class SynchronousMqttConnectionHandler extends MqttConnectionHandler {
     callback();
     return true;
   }
+
+  @override
+  var onBadCertificate;
+
+  @override
+  var onConnected;
+
+  @override
+  var onDisconnected;
 }

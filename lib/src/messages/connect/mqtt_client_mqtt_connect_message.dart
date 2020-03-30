@@ -10,7 +10,8 @@ part of mqtt_client;
 /// An Mqtt message that is used to initiate a connection to a message broker.
 class MqttConnectMessage extends MqttMessage {
   /// Initializes a new instance of the MqttConnectMessage class.
-  /// Only called via the MqttMessage.create operation during processing of an Mqtt message stream.
+  /// Only called via the MqttMessage.create operation during processing of
+  /// an Mqtt message stream.
   MqttConnectMessage() {
     header = MqttHeader().asType(MqttMessageType.connect);
     variableHeader = MqttConnectVariableHeader();
@@ -30,13 +31,15 @@ class MqttConnectMessage extends MqttMessage {
     return this;
   }
 
-  /// Sets the protocol version. (Defaults to v3, the only protcol version supported)
+  /// Sets the protocol version. (Defaults to v3, the only protcol
+  /// version supported)
   MqttConnectMessage withProtocolVersion(int protocolVersion) {
     variableHeader.protocolVersion = protocolVersion;
     return this;
   }
 
-  /// Sets the startClean flag so that the broker drops any messages that were previously destined for us.
+  /// Sets the startClean flag so that the broker drops any messages
+  /// that were previously destined for us.
   MqttConnectMessage startClean() {
     variableHeader.connectFlags.cleanStart = true;
     return this;
@@ -123,7 +126,7 @@ class MqttConnectMessage extends MqttMessage {
 
   @override
   String toString() {
-    final StringBuffer sb = StringBuffer();
+    final sb = StringBuffer();
     sb.write(super.toString());
     sb.writeln(variableHeader.toString());
     sb.writeln(payload.toString());

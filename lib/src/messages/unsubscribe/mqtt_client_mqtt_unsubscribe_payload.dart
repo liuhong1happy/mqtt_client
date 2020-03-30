@@ -25,7 +25,7 @@ class MqttUnsubscribePayload extends MqttPayload {
   MqttHeader header;
 
   /// The collection of subscriptions.
-  List<String> subscriptions = List<String>();
+  List<String> subscriptions = <String>[];
 
   /// Writes the payload to the supplied stream.
   @override
@@ -36,11 +36,11 @@ class MqttUnsubscribePayload extends MqttPayload {
   /// Creates a payload from the specified header stream.
   @override
   void readFrom(MqttByteBuffer payloadStream) {
-    int payloadBytesRead = 0;
-    final int payloadLength = header.messageSize - variableHeader.length;
+    var payloadBytesRead = 0;
+    final payloadLength = header.messageSize - variableHeader.length;
     // Read all the topics and qos subscriptions from the message payload
     while (payloadBytesRead < payloadLength) {
-      final String topic = payloadStream.readMqttStringM();
+      final topic = payloadStream.readMqttStringM();
       payloadBytesRead += topic.length + 2; // +2 = Mqtt string length bytes
       addSubscription(topic);
     }
@@ -49,9 +49,9 @@ class MqttUnsubscribePayload extends MqttPayload {
   /// Gets the length of the payload in bytes when written to a stream.
   @override
   int getWriteLength() {
-    int length = 0;
-    final MqttEncoding enc = MqttEncoding();
-    for (String subscription in subscriptions) {
+    var length = 0;
+    final enc = MqttEncoding();
+    for (final subscription in subscriptions) {
       length += enc.getByteCount(subscription);
     }
     return length;
@@ -69,9 +69,9 @@ class MqttUnsubscribePayload extends MqttPayload {
 
   @override
   String toString() {
-    final StringBuffer sb = StringBuffer();
+    final sb = StringBuffer();
     sb.writeln('Payload: Unsubscription [{${subscriptions.length}}]');
-    for (String subscription in subscriptions) {
+    for (final subscription in subscriptions) {
       sb.writeln('{{ Topic={$subscription}}');
     }
     return sb.toString();

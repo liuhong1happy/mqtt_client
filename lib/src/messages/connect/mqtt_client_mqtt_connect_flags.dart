@@ -12,7 +12,8 @@ class MqttConnectFlags {
   /// Initializes a new instance of the MqttConnectFlags class.
   MqttConnectFlags();
 
-  /// Initializes a new instance of the MqttConnectFlags class configured as per the supplied stream.
+  /// Initializes a new instance of the MqttConnectFlags class configured
+  /// as per the supplied stream.
   MqttConnectFlags.fromByteBuffer(MqttByteBuffer connectFlagsStream) {
     readFrom(connectFlagsStream);
   }
@@ -55,7 +56,7 @@ class MqttConnectFlags {
 
   /// Reads the connect flags from the underlying stream.
   void readFrom(MqttByteBuffer stream) {
-    final int connectFlagsByte = stream.readByte();
+    final connectFlagsByte = stream.readByte();
 
     reserved1 = (connectFlagsByte & 1) == 1;
     cleanStart = (connectFlagsByte & 2) == 2;
@@ -72,5 +73,7 @@ class MqttConnectFlags {
   /// Returns a String that represents the current connect flag settings
   @override
   String toString() =>
-      'Connect Flags: Reserved1=$reserved1, CleanStart=$cleanStart, WillFlag=$willFlag, WillQos=$willQos, WillRetain=$willRetain, PasswordFlag=$passwordFlag, UserNameFlag=$usernameFlag';
+      'Connect Flags: Reserved1=$reserved1, CleanStart=$cleanStart, '
+      'WillFlag=$willFlag, WillQos=$willQos, WillRetain=$willRetain, '
+      'PasswordFlag=$passwordFlag, UserNameFlag=$usernameFlag';
 }

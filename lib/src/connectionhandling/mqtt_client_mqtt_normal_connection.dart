@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
+part of mqtt_server_client;
 
 /// The MQTT normal(insecure TCP) connection class
 class MqttNormalConnection extends MqttConnection {
@@ -23,7 +23,7 @@ class MqttNormalConnection extends MqttConnection {
   @override
   Future<MqttClientConnectionStatus> connect(String server, int port) async {
     try {
-     final ConnectionTask<Socket> connectionTask = await Socket.startConnect(server, port);
+     final connectionTask = await Socket.startConnect(server, port);
      client = await connectionTask.socket;
      readWrapper = ReadWrapper();
      messageStream = MqttByteBuffer(typed.Uint8Buffer());
@@ -31,7 +31,7 @@ class MqttNormalConnection extends MqttConnection {
      return null;
     } on Exception catch (e) {
       _onError(e);
-      final String message =
+      final message =
           'MqttNormalConnection::The connection to the message broker {$server}:{$port} could not be made.';
       throw NoConnectionException(message);
     }

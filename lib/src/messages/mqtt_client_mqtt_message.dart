@@ -7,7 +7,9 @@
 
 part of mqtt_client;
 
-/// Represents an MQTT message that contains a fixed header, variable header and message body.
+/// Represents an MQTT message that contains a fixed header, variable
+/// header and message body.
+///
 /// Messages roughly look as follows.
 /// ----------------------------
 /// | Header, 2-5 Bytes Length |
@@ -34,20 +36,19 @@ class MqttMessage {
   /// Creates a new instance of an MQTT Message based on a raw message stream.
   static MqttMessage createFrom(MqttByteBuffer messageStream) {
     try {
-      MqttHeader header = MqttHeader();
-      // Pass the input stream sequentially through the component deserialization(create) methods
-      // to build a full MqttMessage.
+      var header = MqttHeader();
+      // Pass the input stream sequentially through the component
+      // deserialization(create) methods to build a full MqttMessage.
       header = MqttHeader.fromByteBuffer(messageStream);
       //expected position after reading payload
-      final int expectedPos = messageStream.position + header.messageSize;
+      final expectedPos = messageStream.position + header.messageSize;
 
       if (messageStream.availableBytes < header.messageSize) {
         messageStream.reset();
         throw InvalidMessageException(
             'Available bytes is less than the message size');
       }
-      final MqttMessage message =
-          MqttMessageFactory.getMessage(header, messageStream);
+      final message = MqttMessageFactory.getMessage(header, messageStream);
 
       if (messageStream.position < expectedPos) {
         messageStream.skipBytes = expectedPos - messageStream.position;
@@ -56,7 +57,8 @@ class MqttMessage {
       return message;
     } on Exception catch (e) {
       throw InvalidMessageException(
-          'The data provided in the message stream was not a valid MQTT Message, '
+          'The data provided in the message stream was not a '
+          'valid MQTT Message, '
           'exception is $e, bytestream is $messageStream');
     }
   }
@@ -71,7 +73,7 @@ class MqttMessage {
 
   @override
   String toString() {
-    final StringBuffer sb = StringBuffer();
+    final sb = StringBuffer();
     sb.write('MQTTMessage of type ');
     sb.writeln(header.messageType.toString());
     sb.writeln(header.toString());

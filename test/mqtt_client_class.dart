@@ -5,6 +5,7 @@
  * Copyright :  S.Hamblett
  */
 @TestOn('linux')
+
 import 'dart:io';
 import 'package:test/test.dart';
 
@@ -17,10 +18,10 @@ import 'package:test/test.dart';
 /// Helper function to ping a server
 bool pingServer(String server) {
   // Not on Travis
-  const bool isDeclared = String.fromEnvironment('PUB_ENVIRONMENT') != null;
+  const isDeclared = String.fromEnvironment('PUB_ENVIRONMENT') != null;
   if (isDeclared) {
     print('PUB_ENVIRONMENT is declared');
-    const String noPing = String.fromEnvironment('PUB_ENVIRONMENT');
+    const noPing = String.fromEnvironment('PUB_ENVIRONMENT');
     if (noPing == 'travis') {
       print('Skipping broker tests, running on travis');
       return true;
@@ -28,8 +29,7 @@ bool pingServer(String server) {
       print('PUB_ENVIRONMENT is $noPing');
     }
   }
-  final ProcessResult result =
-      Process.runSync('ping', <String>['-c3', '$server']);
+  final result = Process.runSync('ping', <String>['-c3', '$server']);
   //Get the exit code from the new process.
   if (result.exitCode == 0) {
     return false;
@@ -41,9 +41,9 @@ bool pingServer(String server) {
 }
 
 void main() {
-  final bool skipTests = pingServer('test.mosquitto.org');
+  final skipTests = pingServer('test.mosquitto.org');
   test('Broker Subscribe', () {
-    final ProcessResult result = Process.runSync(
+    final result = Process.runSync(
         'dart', <String>['test/mqtt_client_broker_test_subscribe.dart']);
     print('Broker Subscribe::stdout');
     print(result.stdout.toString());
@@ -53,7 +53,7 @@ void main() {
   }, skip: skipTests);
 
   test('Broker Publish', () {
-    final ProcessResult result = Process.runSync(
+    final result = Process.runSync(
         'dart', <String>['test/mqtt_client_broker_test_publish.dart']);
     print('Broker Publish::stdout');
     print(result.stdout.toString());
