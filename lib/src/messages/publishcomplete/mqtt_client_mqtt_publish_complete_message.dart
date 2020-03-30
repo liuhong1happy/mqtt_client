@@ -23,7 +23,8 @@ class MqttPublishCompleteMessage extends MqttMessage {
         MqttPublishCompleteVariableHeader.fromByteBuffer(messageStream);
   }
 
-  /// Gets or sets the variable header contents. Contains extended metadata about the message
+  /// Gets or sets the variable header contents. Contains extended
+  /// metadata about the message
   MqttPublishCompleteVariableHeader variableHeader;
 
   /// Writes the message to the supplied stream.
@@ -41,7 +42,7 @@ class MqttPublishCompleteMessage extends MqttMessage {
 
   @override
   String toString() {
-    final StringBuffer sb = StringBuffer();
+    final sb = StringBuffer();
     sb.write(super.toString());
     sb.writeln(variableHeader.toString());
     return sb.toString();

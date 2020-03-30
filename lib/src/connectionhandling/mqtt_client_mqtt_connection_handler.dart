@@ -5,38 +5,27 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
+part of mqtt_server_client;
 
-///  This class provides shared connection functionality to connection handler implementations.
+///  This class provides shared connection functionality
+///  to connection handler implementations.
 abstract class MqttConnectionHandler implements IMqttConnectionHandler {
   /// Initializes a new instance of the MqttConnectionHandler class.
   MqttConnectionHandler();
-
-  /// The connection
-  dynamic connection;
-
-  /// Registry of message processors
-  Map<MqttMessageType, MessageCallbackFunction> messageProcessorRegistry =
-      Map<MqttMessageType, MessageCallbackFunction>();
-
-  /// Registry of sent message callbacks
-  List<MessageCallbackFunction> sentMessageCallbacks =
-      List<MessageCallbackFunction>();
-
-  /// Connection status
-  @override
-  MqttClientConnectionStatus connectionStatus = MqttClientConnectionStatus();
 
   /// Use a websocket rather than TCP
   bool useWebSocket = false;
 
   /// Alternate websocket implementation.
   ///
-  /// The Amazon Web Services (AWS) IOT MQTT interface(and maybe others) has a bug that causes it
-  /// not to connect if unexpected message headers are present in the initial GET message during the handshake.
-  /// Since the httpclient classes insist on adding those headers, an alternate method is used to perform the handshake.
+  /// The Amazon Web Services (AWS) IOT MQTT interface(and maybe others)
+  /// has a bug that causes it not to connect if unexpected message headers are
+  /// present in the initial GET message during the handshake.
+  /// Since the httpclient classes insist on adding those headers, an alternate
+  /// method is used to perform the handshake.
   /// After the handshake everything goes back to the normal websocket class.
-  /// Only use this websocket implementation if you know it is needed by your broker.
+  /// Only use this websocket implementation if you know it is needed
+  /// by your broker.
   bool useAlternateWebSocketImplementation = false;
 
   /// User supplied websocket protocols
@@ -46,16 +35,22 @@ abstract class MqttConnectionHandler implements IMqttConnectionHandler {
   bool secure = false;
 
   /// The security context for secure usage
-  SecurityContext securityContext;
+  dynamic securityContext;
 
-  /// Successful connection callback
-  ConnectCallback onConnected;
+  /// The connection
+  dynamic connection;
 
-  /// Unsolicited disconnection callback
-  DisconnectCallback onDisconnected;
+  /// Registry of message processors
+  Map<MqttMessageType, MessageCallbackFunction> messageProcessorRegistry =
+      <MqttMessageType, MessageCallbackFunction>{};
 
-  /// Callback function to handle bad certificate. if true, ignore the error.
-  bool Function(X509Certificate certificate) onBadCertificate;
+  /// Registry of sent message callbacks
+  List<MessageCallbackFunction> sentMessageCallbacks =
+      <MessageCallbackFunction>[];
+
+  /// Connection status
+  @override
+  MqttClientConnectionStatus connectionStatus = MqttClientConnectionStatus();
 
   /// Connect to the specific Mqtt Connection.
   @override
@@ -80,22 +75,19 @@ abstract class MqttConnectionHandler implements IMqttConnectionHandler {
     MqttLogger.log('MqttConnectionHandler::sendMessage - $message');
     if ((connectionStatus.state == MqttConnectionState.connected) ||
         (connectionStatus.state == MqttConnectionState.connecting)) {
-      final typed.Uint8Buffer buff = typed.Uint8Buffer();
-      final MqttByteBuffer stream = MqttByteBuffer(buff);
+      final buff = typed.Uint8Buffer();
+      final stream = MqttByteBuffer(buff);
       message.writeTo(stream);
       stream.seek(0);
       connection.send(stream);
       // Let any registered people know we're doing a message.
-      for (MessageCallbackFunction callback in sentMessageCallbacks) {
+      for (final callback in sentMessageCallbacks) {
         callback(message);
       }
     } else {
       MqttLogger.log('MqttConnectionHandler::sendMessage - not connected');
     }
   }
-
-  /// Runs the disconnection process to stop communicating with a message broker.
-  MqttConnectionState disconnect();
 
   /// Closes the connection to the Mqtt message broker.
   @override
@@ -130,10 +122,10 @@ abstract class MqttConnectionHandler implements IMqttConnectionHandler {
     sentMessageCallbacks.remove(sentMsgCallback);
   }
 
-  /// Handles the Message Available event of the connection control for handling non connection messages
+  /// Handles the Message Available event of the connection control for
+  /// handling non connection messages.
   void messageAvailable(MessageAvailable event) {
-    final MessageCallbackFunction callback =
-        messageProcessorRegistry[event.message.header.messageType];
+    final callback = messageProcessorRegistry[event.message.header.messageType];
     callback(event.message);
   }
 }

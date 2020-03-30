@@ -10,7 +10,8 @@ part of mqtt_client;
 /// Message that indicates a connection acknowledgement.
 class MqttConnectAckMessage extends MqttMessage {
   /// Initializes a new instance of the MqttConnectAckMessage class.
-  /// Only called via the MqttMessage.Create operation during processing of an Mqtt message stream.
+  /// Only called via the MqttMessage.Create operation during processing
+  /// of an Mqtt message stream.
   MqttConnectAckMessage() {
     header = MqttHeader().asType(MqttMessageType.connectAck);
     variableHeader = MqttConnectAckVariableHeader();
@@ -24,7 +25,8 @@ class MqttConnectAckMessage extends MqttMessage {
     readFrom(messageStream);
   }
 
-  /// Gets or sets the variable header contents. Contains extended metadata about the message
+  /// Gets or sets the variable header contents. Contains extended
+  /// metadata about the message
   MqttConnectAckVariableHeader variableHeader;
 
   /// Reads a message from the supplied stream.
@@ -49,7 +51,7 @@ class MqttConnectAckMessage extends MqttMessage {
 
   @override
   String toString() {
-    final StringBuffer sb = StringBuffer();
+    final sb = StringBuffer();
     sb.write(super.toString());
     sb.writeln(variableHeader.toString());
     return sb.toString();

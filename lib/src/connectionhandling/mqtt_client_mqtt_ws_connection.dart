@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
+part of mqtt_server_client;
 
 /// The MQTT connection class for the websocket interface
 class MqttWsConnection extends MqttConnection {
@@ -19,42 +19,31 @@ class MqttWsConnection extends MqttConnection {
     connect(server, port);
   }
 
-  /// The default websocket subprotocol list
-  static const List<String> protocolsMultipleDefault = <String>[
-    'mqtt',
-    'mqttv3.1',
-    'mqttv3.11'
-  ];
-
-  /// The default websocket subprotocol list for brokers who expect this field to be a single entry
-  static const List<String> protocolsSingleDefault = <String>['mqtt'];
-
   /// The websocket subprotocol list
-  List<String> protocols = protocolsMultipleDefault;
+  List<String> protocols = MqttClientConstants.protocolsMultipleDefault;
 
   /// Connect
   @override
   Future<MqttClientConnectionStatus> connect(String server, int port) {
-    final Completer<MqttClientConnectionStatus> completer =
-        Completer<MqttClientConnectionStatus>();
+    final completer = Completer<MqttClientConnectionStatus>();
     // Add the port if present
     Uri uri;
     try {
       uri = Uri.parse(server);
     } on Exception {
-      final String message =
-          'MqttWsConnection::The URI supplied for the WS connection is not valid - $server';
+      final message = 'MqttWsConnection::The URI supplied for the WS '
+          'connection is not valid - $server';
       throw NoConnectionException(message);
     }
     if (uri.scheme != 'ws' && uri.scheme != 'wss') {
-      final String message =
-          'MqttWsConnection::The URI supplied for the WS has an incorrect scheme - $server';
+      final message = 'MqttWsConnection::The URI supplied for the WS has '
+          'an incorrect scheme - $server';
       throw NoConnectionException(message);
     }
     if (port != null) {
       uri = uri.replace(port: port);
     }
-    final String uriString = uri.toString();
+    final uriString = uri.toString();
     MqttLogger.log(
         'MqttWsConnection:: WS URL is $uriString, protocols are $protocols');
     try {
@@ -72,8 +61,8 @@ class MqttWsConnection extends MqttConnection {
         completer.completeError(e);
       });
     } on Exception {
-      final String message =
-          'MqttWsConnection::The connection to the message broker {$uriString} could not be made.';
+      final message = 'MqttWsConnection::The connection to the message broker '
+          '{$uriString} could not be made.';
       throw NoConnectionException(message);
     }
     return completer.future;

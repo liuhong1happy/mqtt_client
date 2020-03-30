@@ -12,15 +12,15 @@ class AsciiPayloadConverter implements PayloadConverter<String> {
   /// Processes received data and returns it as a string.
   @override
   String convertFromBytes(typed.Uint8Buffer messageData) {
-    const Utf8Decoder decoder = Utf8Decoder();
+    const decoder = Utf8Decoder();
     return decoder.convert(messageData.toList());
   }
 
   /// Converts sent data from a string to a byte array.
   @override
   typed.Uint8Buffer convertToBytes(String data) {
-    const Utf8Encoder encoder = Utf8Encoder();
-    final typed.Uint8Buffer buff = typed.Uint8Buffer();
+    const encoder = Utf8Encoder();
+    final buff = typed.Uint8Buffer();
     buff.addAll(encoder.convert(data));
     return buff;
   }

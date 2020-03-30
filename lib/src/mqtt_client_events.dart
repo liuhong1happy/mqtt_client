@@ -13,7 +13,7 @@ class MessageAvailable {
   MessageAvailable(this._message);
 
   /// The message associated with the event
-  MqttMessage _message;
+  final MqttMessage _message;
 
   /// Message
   MqttMessage get message => _message;
@@ -25,13 +25,13 @@ class MessageReceived {
   MessageReceived(this._topic, this._message);
 
   /// The message associated with the event
-  MqttMessage _message;
+  final MqttMessage _message;
 
   /// Message
   MqttMessage get message => _message;
 
   /// The topic
-  PublicationTopic _topic;
+  final PublicationTopic _topic;
 
   /// Topic
   PublicationTopic get topic => _topic;

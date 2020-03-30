@@ -5,7 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
+part of mqtt_server_client;
 
 /// The MQTT normal(insecure TCP) connection class
 class MqttNormalConnection extends MqttConnection {
@@ -22,8 +22,7 @@ class MqttNormalConnection extends MqttConnection {
   /// Connect - overridden
   @override
   Future<MqttClientConnectionStatus> connect(String server, int port) {
-    final Completer<MqttClientConnectionStatus> completer =
-        Completer<MqttClientConnectionStatus>();
+    final completer = Completer<MqttClientConnectionStatus>();
     try {
       // Connect and save the socket.
       Socket.connect(server, port).then((dynamic socket) {
@@ -38,8 +37,8 @@ class MqttNormalConnection extends MqttConnection {
       });
     } on Exception catch (e) {
       completer.completeError(e);
-      final String message =
-          'MqttNormalConnection::The connection to the message broker {$server}:{$port} could not be made.';
+      final message = 'MqttNormalConnection::The connection to the message '
+          'broker {$server}:{$port} could not be made.';
       throw NoConnectionException(message);
     }
     return completer.future;

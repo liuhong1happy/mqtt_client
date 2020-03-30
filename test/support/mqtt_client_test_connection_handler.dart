@@ -6,13 +6,54 @@
  */
 import 'dart:async';
 import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
 
 class TestConnectionHandlerNoSend extends MqttConnectionHandler {
+  /// Use a websocket rather than TCP
+  @override
+  bool useWebSocket = false;
+
+  /// Alternate websocket implementation.
+  ///
+  /// The Amazon Web Services (AWS) IOT MQTT interface(and maybe others)
+  /// has a bug that causes it not to connect if unexpected message headers are
+  /// present in the initial GET message during the handshake.
+  /// Since the httpclient classes insist on adding those headers, an alternate
+  /// method is used to perform the handshake.
+  /// After the handshake everything goes back to the normal websocket class.
+  /// Only use this websocket implementation if you know it is needed
+  /// by your broker.
+  @override
+  bool useAlternateWebSocketImplementation = false;
+
+  /// User supplied websocket protocols
+  @override
+  List<String> websocketProtocols;
+
+  /// If set use a secure connection, note TCP only, not websocket.
+  @override
+  bool secure = false;
+
+  /// The security context for secure usage
+  @override
+  dynamic securityContext;
+
+  /// Successful connection callback
+  @override
+  ConnectCallback onConnected;
+
+  /// Unsolicited disconnection callback
+  @override
+  DisconnectCallback onDisconnected;
+
+  /// Callback function to handle bad certificate. if true, ignore the error.
+  @override
+  bool Function(dynamic certificate) onBadCertificate;
+
   @override
   Future<MqttClientConnectionStatus> internalConnect(
       String hostname, int port, MqttConnectMessage message) {
-    final Completer<MqttClientConnectionStatus> completer =
-        Completer<MqttClientConnectionStatus>();
+    final completer = Completer<MqttClientConnectionStatus>();
     return completer.future;
   }
 
@@ -22,13 +63,52 @@ class TestConnectionHandlerNoSend extends MqttConnectionHandler {
 }
 
 class TestConnectionHandlerSend extends MqttConnectionHandler {
-  List<MqttMessage> sentMessages = List<MqttMessage>();
+  /// Use a websocket rather than TCP
+  @override
+  bool useWebSocket = false;
+
+  /// Alternate websocket implementation.
+  ///
+  /// The Amazon Web Services (AWS) IOT MQTT interface(and maybe others)
+  /// has a bug that causes it not to connect if unexpected message headers are
+  /// present in the initial GET message during the handshake.
+  /// Since the httpclient classes insist on adding those headers, an alternate
+  /// method is used to perform the handshake.
+  /// After the handshake everything goes back to the normal websocket class.
+  /// Only use this websocket implementation if you know it is needed
+  /// by your broker.
+  @override
+  bool useAlternateWebSocketImplementation = false;
+
+  /// User supplied websocket protocols
+  @override
+  List<String> websocketProtocols;
+
+  /// If set use a secure connection, note TCP only, not websocket.
+  @override
+  bool secure = false;
+
+  /// The security context for secure usage
+  @override
+  dynamic securityContext;
+
+  /// Successful connection callback
+  @override
+  ConnectCallback onConnected;
+
+  /// Unsolicited disconnection callback
+  @override
+  DisconnectCallback onDisconnected;
+
+  /// Callback function to handle bad certificate. if true, ignore the error.
+  @override
+  bool Function(dynamic certificate) onBadCertificate;
+  List<MqttMessage> sentMessages = <MqttMessage>[];
 
   @override
   Future<MqttClientConnectionStatus> internalConnect(
       String hostname, int port, MqttConnectMessage message) {
-    final Completer<MqttClientConnectionStatus> completer =
-        Completer<MqttClientConnectionStatus>();
+    final completer = Completer<MqttClientConnectionStatus>();
     return completer.future;
   }
 

@@ -15,6 +15,19 @@ abstract class IMqttConnectionHandler {
   /// The connection status
   MqttClientConnectionStatus get connectionStatus;
 
+  /// Successful connection callback
+  ConnectCallback onConnected;
+
+  /// Unsolicited disconnection callback
+  DisconnectCallback onDisconnected;
+
+  /// Callback function to handle bad certificate. if true, ignore the error.
+  bool Function(dynamic certificate) onBadCertificate;
+
+  /// Runs the disconnection process to stop communicating
+  /// with a message broker.
+  MqttConnectionState disconnect();
+
   /// Closes a connection.
   void close();
 
@@ -34,13 +47,16 @@ abstract class IMqttConnectionHandler {
   ///  Sends a message to a message broker.
   void sendMessage(MqttMessage message);
 
-  /// Unregisters the specified callbacks so it not longer receives messages of the specified type.
+  /// Unregisters the specified callbacks so it not longer receives
+  /// messages of the specified type.
   /// The message type the callback currently receives
   void unRegisterForMessage(MqttMessageType msgType);
 
-  /// Registers a callback to be executed whenever a message is sent by the connection handler.
+  /// Registers a callback to be executed whenever a message is
+  /// sent by the connection handler.
   void registerForAllSentMessages(MessageCallbackFunction sentMsgCallback);
 
-  /// UnRegisters a callback that is registerd to be executed whenever a message is sent by the connection handler.
+  /// UnRegisters a callback that is registerd to be executed whenever a
+  /// message is sent by the connection handler.
   void unRegisterForAllSentMessages(MessageCallbackFunction sentMsgCallback);
 }

@@ -14,12 +14,6 @@ class MqttUtilities {
   static Future<void> asyncSleep(int seconds) =>
       Future<void>.delayed(Duration(seconds: seconds));
 
-  /// Sleep function that block asynchronous activity.
-  /// Time units are seconds
-  static void syncSleep(int seconds) {
-    sleep(Duration(seconds: seconds));
-  }
-
   /// Qos conversion, always use this to get a Qos
   /// enumeration from a value
   static MqttQos getQosLevel(int value) {
@@ -44,13 +38,13 @@ class MqttCancellableAsyncSleep {
   MqttCancellableAsyncSleep(this._timeout);
 
   /// Millisecond timeout
-  int _timeout;
+  final int _timeout;
 
   /// Timeout
   int get timeout => _timeout;
 
   /// The completer
-  Completer<void> _completer = Completer<void>();
+  final Completer<void> _completer = Completer<void>();
 
   /// The timer
   Timer _timer;

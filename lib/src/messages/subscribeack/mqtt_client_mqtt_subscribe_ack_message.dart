@@ -23,7 +23,8 @@ class MqttSubscribeAckMessage extends MqttMessage {
     readFrom(messageStream);
   }
 
-  /// Gets or sets the variable header contents. Contains extended metadata about the message
+  /// Gets or sets the variable header contents. Contains extended
+  /// metadata about the message.
   MqttSubscribeAckVariableHeader variableHeader;
 
   /// Gets or sets the payload of the Mqtt Message.
@@ -61,7 +62,7 @@ class MqttSubscribeAckMessage extends MqttMessage {
 
   @override
   String toString() {
-    final StringBuffer sb = StringBuffer();
+    final sb = StringBuffer();
     sb.write(super.toString());
     sb.writeln(variableHeader.toString());
     sb.writeln(payload.toString());

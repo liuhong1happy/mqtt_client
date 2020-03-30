@@ -7,7 +7,8 @@
 
 part of mqtt_client;
 
-/// Class that contains details related to an MQTT Subscribe Ack messages payload
+/// Class that contains details related to an MQTT Subscribe Ack
+/// messages payload.
 class MqttSubscribeAckPayload extends MqttPayload {
   /// Initializes a new instance of the MqttSubscribeAckPayload class.
   MqttSubscribeAckPayload();
@@ -25,12 +26,12 @@ class MqttSubscribeAckPayload extends MqttPayload {
   MqttHeader header;
 
   /// The collection of Qos grants, Key is the topic, Value is the qos
-  List<MqttQos> qosGrants = List<MqttQos>();
+  List<MqttQos> qosGrants = <MqttQos>[];
 
   /// Writes the payload to the supplied stream.
   @override
   void writeTo(MqttByteBuffer payloadStream) {
-    for (MqttQos value in qosGrants) {
+    for (final value in qosGrants) {
       payloadStream.writeByte(value.index);
     }
   }
@@ -38,12 +39,11 @@ class MqttSubscribeAckPayload extends MqttPayload {
   /// Creates a payload from the specified header stream.
   @override
   void readFrom(MqttByteBuffer payloadStream) {
-    int payloadBytesRead = 0;
-    final int payloadLength = header.messageSize - variableHeader.length;
+    var payloadBytesRead = 0;
+    final payloadLength = header.messageSize - variableHeader.length;
     // Read the qos grants from the message payload
     while (payloadBytesRead < payloadLength) {
-      final MqttQos granted =
-          MqttUtilities.getQosLevel(payloadStream.readByte());
+      final granted = MqttUtilities.getQosLevel(payloadStream.readByte());
       payloadBytesRead++;
       addGrant(granted);
     }
@@ -65,9 +65,9 @@ class MqttSubscribeAckPayload extends MqttPayload {
 
   @override
   String toString() {
-    final StringBuffer sb = StringBuffer();
+    final sb = StringBuffer();
     sb.writeln('Payload: Qos grants [{${qosGrants.length}}]');
-    for (MqttQos value in qosGrants) {
+    for (final value in qosGrants) {
       sb.writeln('{{ Grant={$value} }}');
     }
     return sb.toString();

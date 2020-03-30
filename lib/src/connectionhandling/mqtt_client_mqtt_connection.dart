@@ -5,18 +5,7 @@
  * Copyright :  S.Hamblett
  */
 
-part of mqtt_client;
-
-/// State and logic used to read from the underlying network stream.
-class ReadWrapper {
-  /// Creates a new ReadWrapper that wraps the state used to read a message from a stream.
-  ReadWrapper() {
-    messageBytes = List<int>();
-  }
-
-  /// The bytes associated with the message being read.
-  List<int> messageBytes;
-}
+part of mqtt_server_client;
 
 /// The MQTT connection base class
 class MqttConnection {
@@ -41,11 +30,11 @@ class MqttConnection {
   DisconnectCallback onDisconnected;
 
   /// The event bus
-  events.EventBus _clientEventBus;
+  final events.EventBus _clientEventBus;
 
   /// Connect, must be overridden in connection classes
   Future<void> connect(String server, int port) {
-    final Completer<void> completer = Completer<void>();
+    final completer = Completer<void>();
     return completer.future;
   }
 
@@ -71,7 +60,7 @@ class MqttConnection {
     messageStream.addAll(data);
 
     while (messageStream.isMessageAvailable()) {
-      bool messageIsValid = true;
+      var messageIsValid = true;
       MqttMessage msg;
 
       try {
@@ -79,9 +68,9 @@ class MqttConnection {
         if (msg == null) {
           return;
         }
-      } on Exception catch (e) {
-        MqttLogger.log('MqttConnection::_ondata - message is not valid');
-        MqttLogger.log('MqttConnection::_ondata - exception is $e');
+      } on Exception {
+        MqttLogger.log('MqttConnection::_ondata - message is not yet valid, '
+            'waiting for more data ...');
         messageIsValid = false;
       }
       if (!messageIsValid) {
@@ -106,7 +95,9 @@ class MqttConnection {
   void _onError(dynamic error) {
     _disconnect();
     MqttLogger.log('MqttConnection::_onError - calling disconnected callback');
-    onDisconnected();
+    if (onDisconnected != null) {
+      onDisconnected();
+    }
   }
 
   /// OnDone listener callback
@@ -126,7 +117,7 @@ class MqttConnection {
 
   /// Sends the message in the stream to the broker.
   void send(MqttByteBuffer message) {
-    final typed.Uint8Buffer messageBytes = message.read(message.length);
+    final messageBytes = message.read(message.length);
     client?.add(messageBytes.toList());
   }
 

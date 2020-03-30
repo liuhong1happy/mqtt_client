@@ -24,14 +24,14 @@ class MqttClientTopicFilter {
             sync: true);
   }
 
-  String _topic;
+  final String _topic;
 
   SubscriptionTopic _subscriptionTopic;
 
   /// The topic on which to filter
   String get topic => _topic;
 
-  Stream<List<MqttReceivedMessage<MqttMessage>>> _clientUpdates;
+  final Stream<List<MqttReceivedMessage<MqttMessage>>> _clientUpdates;
 
   StreamController<List<MqttReceivedMessage<MqttMessage>>> _updates;
 
@@ -42,9 +42,8 @@ class MqttClientTopicFilter {
     String lastTopic;
     try {
       // Pass through if we have a match
-      final List<MqttReceivedMessage<MqttMessage>> tmp =
-          List<MqttReceivedMessage<MqttMessage>>();
-      for (MqttReceivedMessage<MqttMessage> message in c) {
+      final tmp = <MqttReceivedMessage<MqttMessage>>[];
+      for (final message in c) {
         lastTopic = message.topic;
         if (_subscriptionTopic.matches(PublicationTopic(message.topic))) {
           tmp.add(message);
@@ -54,8 +53,8 @@ class MqttClientTopicFilter {
         _updates.add(tmp);
       }
     } on RangeError catch (e) {
-      MqttLogger.log(
-          'MqttClientTopicFilter::_topicIn - cannot process received topic: $lastTopic');
+      MqttLogger.log('MqttClientTopicFilter::_topicIn - cannot process '
+          'received topic: $lastTopic');
       MqttLogger.log('MqttClientTopicFilter::_topicIn - exception is $e');
     }
   }

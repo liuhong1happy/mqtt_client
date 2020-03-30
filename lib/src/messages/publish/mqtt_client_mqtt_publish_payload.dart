@@ -32,10 +32,11 @@ class MqttPublishPayload extends MqttPayload {
   /// Creates a payload from the specified header stream.
   @override
   void readFrom(MqttByteBuffer payloadStream) {
-    // The payload of the publish message is not a string, just a binary chunk of bytes.
-    // The length of the bytes is the length specified in the header, minus any bytes
-    // spent in the variable header.
-    final int messageBytes = header.messageSize - variableHeader.length;
+    // The payload of the publish message is not a string, just
+    // a binary chunk of bytes.
+    // The length of the bytes is the length specified in the header,
+    // minus any bytes spent in the variable header.
+    final messageBytes = header.messageSize - variableHeader.length;
     message = payloadStream.read(messageBytes);
   }
 
@@ -55,8 +56,8 @@ class MqttPublishPayload extends MqttPayload {
 
   /// Converts an array of bytes to a byte string.
   static String bytesToString(typed.Uint8Buffer message) {
-    final StringBuffer sb = StringBuffer();
-    for (int b in message) {
+    final sb = StringBuffer();
+    for (final b in message) {
       sb.write('<');
       sb.write(b);
       sb.write('>');
@@ -66,7 +67,7 @@ class MqttPublishPayload extends MqttPayload {
 
   /// Converts an array of bytes to a character string.
   static String bytesToStringAsString(typed.Uint8Buffer message) {
-    final StringBuffer sb = StringBuffer();
+    final sb = StringBuffer();
     message.forEach(sb.writeCharCode);
     return sb.toString();
   }

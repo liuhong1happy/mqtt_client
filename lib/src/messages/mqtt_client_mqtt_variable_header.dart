@@ -7,7 +7,8 @@
 
 part of mqtt_client;
 
-/// Enumeration used by subclasses to tell the variable header what should be read from the underlying stream.
+/// Enumeration used by subclasses to tell the variable header what
+/// should be read from the underlying stream.
 enum MqttReadWriteFlags {
   /// Nothing
   none,
@@ -34,7 +35,8 @@ enum MqttReadWriteFlags {
   messageIdentifier
 }
 
-/// Represents the base class for the Variable Header portion of some MQTT Messages.
+/// Represents the base class for the Variable Header portion
+/// of some MQTT Messages.
 class MqttVariableHeader {
   /// Initializes a new instance of the MqttVariableHeader class.
   MqttVariableHeader() {
@@ -43,7 +45,8 @@ class MqttVariableHeader {
     connectFlags = MqttConnectFlags();
   }
 
-  /// Initializes a new instance of the MqttVariableHeader class, populating it with data from a stream.
+  /// Initializes a new instance of the MqttVariableHeader class,
+  /// populating it with data from a stream.
   MqttVariableHeader.fromByteBuffer(MqttByteBuffer headerStream) {
     readFrom(headerStream);
   }
@@ -75,11 +78,11 @@ class MqttVariableHeader {
   int messageIdentifier = 0;
 
   /// Encoder
-  MqttEncoding _enc = MqttEncoding();
+  final MqttEncoding _enc = MqttEncoding();
 
   /// Creates a variable header from the specified header stream.
-  /// A subclass can override this method to do completely custom read operations
-  /// if required.
+  /// A subclass can override this method to do completely
+  /// custom read operations if required.
   void readFrom(MqttByteBuffer variableHeaderStream) {
     readProtocolName(variableHeaderStream);
     readProtocolVersion(variableHeaderStream);
@@ -91,8 +94,8 @@ class MqttVariableHeader {
   }
 
   /// Writes the variable header to the supplied stream.
-  /// A subclass can override this method to do completely custom write operations
-  /// if required.
+  /// A subclass can override this method to do completely
+  /// custom write operations if required.
   void writeTo(MqttByteBuffer variableHeaderStream) {
     writeProtocolName(variableHeaderStream);
     writeProtocolVersion(variableHeaderStream);
@@ -106,8 +109,8 @@ class MqttVariableHeader {
   /// Gets the length of the write data when WriteTo will be called.
   /// A subclass that overrides writeTo must also overwrite this method.
   int getWriteLength() {
-    int headerLength = 0;
-    final MqttEncoding enc = MqttEncoding();
+    var headerLength = 0;
+    final enc = MqttEncoding();
     headerLength += enc.getByteCount(protocolName);
     headerLength += 1; // protocolVersion
     headerLength += MqttConnectFlags.getWriteLength();
@@ -185,7 +188,7 @@ class MqttVariableHeader {
   void readTopicName(MqttByteBuffer stream) {
     topicName = MqttByteBuffer.readMqttString(stream);
     // If the protocol si V311 allow extended UTF8 characters
-    if (Protocol.version == Constants.mqttV311ProtocolVersion) {
+    if (Protocol.version == MqttClientConstants.mqttV311ProtocolVersion) {
       length += _enc.getByteCount(topicName);
     } else {
       length = topicName.length + 2; // 2 for length short at front of string.
